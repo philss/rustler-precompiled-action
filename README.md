@@ -1,5 +1,7 @@
 # Rustler Precompiled Action
 
+:warning: - **Please do not use this project yet. It's under construction.**"
+
 This is a GitHub Action that builds library crates conditionally using [cross],
 and renames the final library file to the naming expected by [RustlerPrecompiled].
 
@@ -18,6 +20,14 @@ The following inputs are accepted:
 | `nif-version`     |  The NIF version that we are aiming to. | false   | `"2.16"`  |
 | `use-cross`       |  If the target requires the usage of cross. | false   |   |
 | `cross-version`   |  The version desired for cross, the tool that builds for multiple plataforms. | false  | `"v0.2.4"`  |
+| `manifest-file`   |  A relative path to the `Cargo.toml` file of the project. | false | "`Cargo.toml`" |
+
+## Outputs
+
+| Name        | Description |
+|-------------|-------------|
+| `file-name` | The name of the tarball file for this build |
+| `file-path` | The full path of the tarball file for this build |
 
 ## License
 

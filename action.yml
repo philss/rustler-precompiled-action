@@ -26,6 +26,10 @@ inputs:
     description: The NIF version that we are aiming to.
     default: "2.16"
     required: false
+  manifest-file:
+    description: A relative path to the `Cargo.toml` file of the project.
+    required: false
+    default: "Cargo.toml"
 
 outputs:
   file-name:
@@ -52,9 +56,9 @@ runs:
       shell: bash
       run: |
         if [ "${{ inputs.use-cross }}" == "true" ]; then
-          cross build --release --target=${{ inputs.target }}
+          cross build --release --target=${{ inputs.target }} --manifest-path=${{ inputs.manifest-file }}
         else
-          cargo build --release --target=${{ inputs.target }}
+          cargo build --release --target=${{ inputs.target }} --manifest-path=${{ inputs.manifest-file }}
         fi
 
     - name: Rename lib to the final name
