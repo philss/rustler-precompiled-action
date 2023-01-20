@@ -1,0 +1,110 @@
+name: Rustler Precompiled Action
+description: Precompiles Rustler projects and outputs files in the expected filenames.
+branding:
+  icon: cpu
+  color: purple
+
+inputs:
+  project-name:
+    description: Name of the crate that is being built. This is the same of the Cargo.toml of the crate.
+    required: true
+  project-version:
+    description: The version to use in the name of the lib. This mostly matches the Elixir package version.
+    required: true
+  cross-version:
+    description: The version desired for cross, the tool that builds for multiple plataforms.
+    required: false
+    default: "v0.2.4"
+  use-cross:
+    description: If the target requires the usage of cross.
+    required: false
+    default: false
+  target:
+    description: The Rust target we are building to.
+    required: true
+  nif-version:
+    description: The NIF version that we are aiming to.
+    default: "2.16"
+    required: false
+
+outputs:
+  file-name:
+    description: The tarball compressed file name that was generated.
+    value: ${{ steps.rename.outputs.file-name }} 
+  file-path:
+    description: The full file path of the artifact that was generated.
+    value: ${{ steps.rename.outputs.file-path }} 
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download cross from GitHub releases
+      uses: giantswarm/install-binary-action@v1.1.0
+      if: ${{ inputs.use-cross }}
+      with:
+        binary: "cross"
+        version: ${{ inputs.cross-version }}
+        download_url: "https://github.com/cross-rs/cross/releases/download/${version}/cross-x86_64-unknown-linux-gnu.tar.gz"
+        tarball_binary_path: "${binary}"
+        smoke_test: "${binary} --version"
+
+    - name: Build
+      shell: bash
+      run: |
+        if [ "${{ inputs.use-cross }}" == "true" ]; then
+          cross build --release --target=${{ inputs.target }}
+        else
+          cargo build --release --target=${{ inputs.target }}
+        fi
+
+    - name: Rename lib to the final name
+      id: rename
+      shell: bash
+      run: |
+        LIB_PREFIX="lib"
+        case ${{ inputs.target }} in
+          *-pc-windows-*) LIB_PREFIX="" ;;
+        esac;
+
+        # Figure out suffix of lib
+        # See: https://doc.rust-lang.org/reference/linkage.html
+        LIB_SUFFIX=".so"
+        case ${{ inputs.target }} in
+          *-apple-darwin) LIB_SUFFIX=".dylib" ;;
+          *-pc-windows-*) LIB_SUFFIX=".dll" ;;
+        esac;
+
+        CICD_INTERMEDIATES_DIR=$(mktemp -d) 
+
+        # Setup paths
+        LIB_DIR="${CICD_INTERMEDIATES_DIR}/released-lib"
+        mkdir -p "${LIB_DIR}"
+        LIB_NAME="${LIB_PREFIX}${{ inputs.project-name }}${LIB_SUFFIX}"
+        LIB_PATH="${LIB_DIR}/${LIB_NAME}"
+
+        # Copy the release build lib to the result location
+        cp "target/${{ inputs.target }}/release/${LIB_NAME}" "${LIB_DIR}"
+
+        # Final paths
+        # In the end we use ".so" for MacOS in the final build
+        # See: https://www.erlang.org/doc/man/erlang.html#load_nif-2
+        LIB_FINAL_SUFFIX="${LIB_SUFFIX}"
+        case ${{ inputs.target }} in
+          *-apple-darwin) LIB_FINAL_SUFFIX=".so" ;;
+        esac;
+
+        LIB_FINAL_NAME="${LIB_PREFIX}${{ inputs.project-name }}-v${{ inputs.project-version }}-nif-${{ inputs.nif-version }}-${{ inputs.target }}${LIB_FINAL_SUFFIX}"
+
+        # Rename lib to final name on this directory
+        mv "${LIB_DIR}/${LIB_NAME}" "${LIB_DIR}/${LIB_FINAL_NAME}"
+
+        cd "${LIB_DIR}"
+        tar -cvzf "${LIB_FINAL_NAME}.tar.gz" "${LIB_FINAL_NAME}"
+        cd -
+
+        # Passes the path relative to the root of the project.
+        LIB_FINAL_PATH="${LIB_DIR}/${LIB_FINAL_NAME}.tar.gz"
+
+        # Let subsequent steps know where to find the lib
+        echo "file-path=${LIB_FINAL_PATH}" >> $GITHUB_OUTPUT
+        echo "file-name=${LIB_FINAL_NAME}.tar.gz" >> $GITHUB_OUTPUT
