@@ -86,8 +86,10 @@ runs:
         LIB_NAME="${LIB_PREFIX}${{ inputs.project-name }}${LIB_SUFFIX}"
         LIB_PATH="${LIB_DIR}/${LIB_NAME}"
 
+        CRATE_PATH="$(dirname ${{ inputs.manifest-file }})"
+
         # Copy the release build lib to the result location
-        cp "target/${{ inputs.target }}/release/${LIB_NAME}" "${LIB_DIR}"
+        cp "${CRATE_PATH}/target/${{ inputs.target }}/release/${LIB_NAME}" "${LIB_DIR}"
 
         # Final paths
         # In the end we use ".so" for MacOS in the final build
