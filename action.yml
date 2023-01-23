@@ -55,8 +55,8 @@ runs:
     - name: Build
       shell: bash
       run: |
-        current_dir=$(pwd)
-        echo "Going from path: $current_dir"
+        CURRENT_DIR=$(pwd)
+        echo "Going from path: $CURRENT_DIR"
         echo "To path: ${{ inputs.project-dir }}"
 
         cd "${{ inputs.project-dir }}"
@@ -67,15 +67,15 @@ runs:
           cargo build --release --target=${{ inputs.target }}
         fi
 
-        cd "$current_dir"
+        cd "$CURRENT_DIR"
 
     - name: Rename lib to the final name
       id: rename
       shell: bash
       run: |
-        current_dir=$(pwd)
+        CURRENT_DIR=$(pwd)
 
-        echo "Going from path: $current_dir"
+        echo "Going from path: $CURRENT_DIR"
         echo "To path: ${{ inputs.project-dir }}"
 
         cd "${{ inputs.project-dir }}"
@@ -96,7 +96,7 @@ runs:
         # Setup paths
         LIB_NAME="${LIB_PREFIX}${{ inputs.project-name }}${LIB_SUFFIX}"
         LIB_DIR="target/${{ inputs.target }}/release"
-        LIB_PATH="${LIB_DIR}/${LIB_NAME}"
+        LIB_FULL_DIR="${CURRENT_DIR}/${{ inputs.project-dir }}/${LIB_DIR}"
 
         # Final name
         # In the end we use ".so" for MacOS in the final build
@@ -106,12 +106,19 @@ runs:
           *-apple-darwin) LIB_FINAL_SUFFIX=".so" ;;
         esac;
 
+        # It saves in the format RustlerPrecompiled expects.
         LIB_FINAL_NAME="${LIB_PREFIX}${{ inputs.project-name }}-v${{ inputs.project-version }}-nif-${{ inputs.nif-version }}-${{ inputs.target }}${LIB_FINAL_SUFFIX}"
+        TAR_GZ_FILE="${LIB_FINAL_NAME}.tar.gz"
 
         cd "${LIB_DIR}"
-        tar -cvzf "${LIB_NAME}.tar.gz" "${LIB_NAME}"
-        cd -
 
-        # Let subsequent steps know where to find the lib
-        echo "file-path=${LIB_PATH}.tar.gz" >> $GITHUB_OUTPUT
-        echo "file-name=${LIB_FINAL_NAME}.tar.gz" >> $GITHUB_OUTPUT
+        # Copy with the correct final name.
+        cp "${LIB_NAME}" "${LIB_FINAL_NAME}"
+        tar -cvzf "${TAR_GZ_FILE}" "${LIB_FINAL_NAME}"
+
+        # Go back to the initial path.
+        cd "${CURRENT_DIR}"
+
+        # Let subsequent steps know where to find the lib.
+        echo "file-path=${LIB_FULL_DIR}/${TAR_GZ_FILE}" >> $GITHUB_OUTPUT
+        echo "file-name=${TAR_GZ_FILE}" >> $GITHUB_OUTPUT
