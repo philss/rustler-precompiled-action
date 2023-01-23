@@ -7,6 +7,23 @@ It's **important to notice that this Action won't install Rust**. So you need to
 install it first. For that we recommend the [dtolnay/rust-toolchain] action that
 is well maintained.
 
+## Usage
+
+```yaml
+- name: Build the project
+  id: build
+  uses: philss/rustler-precompiled-action@v1
+  with:
+    project-name: example
+    project-version: "0.5.2"
+    target: aarch64-unknown-linux-gnu
+    nif-version: "2.16"
+    use-cross: true
+    project-dir: "native/example"
+```
+
+See the example workflow below.
+
 ## Inputs
 
 The following inputs are accepted:
