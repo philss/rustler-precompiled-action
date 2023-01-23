@@ -61,6 +61,17 @@ runs:
         tarball_binary_path: "${binary}"
         smoke_test: "${binary} --version"
 
+    - name: Show version information (Rust, cargo, GCC)
+      shell: bash
+      run: |
+        gcc --version || true
+        rustup -V
+        rustup toolchain list
+        rustup default
+        cargo -V
+        rustc -V
+        rustc --print=cfg
+
     - name: Build
       shell: bash
       run: |
@@ -123,7 +134,14 @@ runs:
         # Copy with the correct final name.
         cp "${LIB_NAME}" "${LIB_FINAL_NAME}"
         tar -cvzf "${TAR_GZ_FILE}" "${LIB_FINAL_NAME}"
-        FILE_SHA256=$(shasum -a 256 "${TAR_GZ_FILE}" | cut -d' ' -f1)
+
+        case ${{ runner.os }} in
+         macOS) FILE_SHA256=$(shasum -a 256 "${TAR_GZ_FILE}" | cut -d' ' -f1) ;;
+         *) FILE_SHA256=$(sha256sum "${TAR_GZ_FILE}" | cut -d' ' -f1) ;;
+        esac;
+
+        echo "File name: ${TAR_GZ_FILE}"
+        echo "SHA256: ${FILE_SHA256}"
 
         # Move the tar gz to the initial/root dir. This is necessary because Windows can't find
         # inside the path we provide.
