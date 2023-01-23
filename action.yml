@@ -27,7 +27,10 @@ inputs:
     default: "2.16"
     required: false
   project-dir:
-    description: A relative path where the project is located. The script is going to enter this path.
+    description: >
+      A relative path where the project is located.
+      The script is going to enter this path in order to compile the NIF.
+      For example:\s"native/my_nif".
     required: true
     default: "./"
 
@@ -36,8 +39,14 @@ outputs:
     description: The tarball compressed file name that was generated.
     value: ${{ steps.rename.outputs.file-name }} 
   file-path:
-    description: The full file path of the artifact that was generated.
+    description: >
+      The file path of the tar.gz generated.
+      For compatible reasons, this is equal to the file name.
+      The final file is going to be placed at the root of your project.
     value: ${{ steps.rename.outputs.file-path }} 
+  file-sha256:
+    description: The SHA256 of the tarball file.
+    value: ${{ steps.rename.outputs.file-sha256 }} 
 
 runs:
   using: "composite"
@@ -114,6 +123,7 @@ runs:
         # Copy with the correct final name.
         cp "${LIB_NAME}" "${LIB_FINAL_NAME}"
         tar -cvzf "${TAR_GZ_FILE}" "${LIB_FINAL_NAME}"
+        FILE_SHA256=$(sha256sum "${TAR_GZ_FILE}" | cut -d' ' -f1)
 
         # Move the tar gz to the initial/root dir. This is necessary because Windows can't find
         # inside the path we provide.
@@ -125,3 +135,4 @@ runs:
         # Let subsequent steps know where to find the lib.
         echo "file-path=${TAR_GZ_FILE}" >> $GITHUB_OUTPUT
         echo "file-name=${TAR_GZ_FILE}" >> $GITHUB_OUTPUT
+        echo "file-sha256=${FILE_SHA256}" >> $GITHUB_OUTPUT
