@@ -101,7 +101,7 @@ runs:
         LIB_PATH="${LIB_DIR}/${LIB_NAME}"
 
         # Copy the release build lib to the result location
-        cp "${{ inputs.project-dir }}/target/${{ inputs.target }}/release/${LIB_NAME}" "${LIB_DIR}"
+        cp "target/${{ inputs.target }}/release/${LIB_NAME}" "${LIB_DIR}"
 
         # Final paths
         # In the end we use ".so" for MacOS in the final build
