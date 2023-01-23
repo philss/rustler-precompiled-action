@@ -12,7 +12,7 @@ is well maintained.
 ```yaml
 - name: Build the project
   id: build
-  uses: philss/rustler-precompiled-action@v1
+  uses: philss/rustler-precompiled-action@v1.0.0
   with:
     project-name: example
     project-version: "0.5.2"
@@ -32,7 +32,7 @@ The following inputs are accepted:
 |-------------------|-----------------------------------------------------------------------|----------|------------|
 | `cross-version`   |  The version desired for cross. Only relevant if `use-cross` is true. | false    | `"v0.2.4"` |
 | `nif-version`     |  The NIF version that we are aiming to.                               | false    | `"2.16"`   |
-| `project-dir`     |  A relative path where the project is located.                        | true     | "./"       |
+| `project-dir`     |  A relative path where the project is located.                        | true     | `"./"`     |
 | `project-name`    |  Name of the crate that is being built. Same as in Cargo.toml         | true     |            |
 | `project-version` |  The version of the Elixir package that the crate is in.              | true     |            |
 | `target`          |  The Rust target we are building to.                                  | true     |            |
@@ -98,7 +98,7 @@ jobs:
 
     - name: Build the project
       id: build-crate
-      uses: philss/rustler-precompiled-action@main
+      uses: philss/rustler-precompiled-action@v1.0.0
       with:
         project-name: example
         project-version: ${{ env.PROJECT_VERSION }}
