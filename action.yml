@@ -30,7 +30,7 @@ inputs:
     description: >
       A relative path where the project is located.
       The script is going to enter this path in order to compile the NIF.
-      For example:\s"native/my_nif".
+      For example, "native/my_nif".
     required: true
     default: "./"
 
@@ -143,7 +143,7 @@ runs:
         echo "File name: ${TAR_GZ_FILE}"
         echo "SHA256: ${FILE_SHA256}"
 
-        # Move the tar gz to the initial/root dir. This is necessary because Windows can't find
+        # Move the tar gz to the initial/root dir. This is necessary because Windows cannot find
         # inside the path we provide.
         mv "${TAR_GZ_FILE}" "${INITIAL_DIR}/"
 
