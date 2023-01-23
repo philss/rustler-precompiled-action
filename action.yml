@@ -26,10 +26,10 @@ inputs:
     description: The NIF version that we are aiming to.
     default: "2.16"
     required: false
-  manifest-file:
-    description: A relative path to the `Cargo.toml` file of the project.
-    required: false
-    default: "Cargo.toml"
+  project-dir:
+    description: A relative path where the project is located.
+    required: true
+    default: "./"
 
 outputs:
   file-name:
@@ -55,16 +55,30 @@ runs:
     - name: Build
       shell: bash
       run: |
+        current_dir=$(pwd)
+        echo "Going from path: $current_dir"
+        echo "To path: ${{ inputs.project-dir }}"
+
+        cd "${{ inputs.project-dir }}"
+
         if [ "${{ inputs.use-cross }}" == "true" ]; then
-          cross build --release --target=${{ inputs.target }} --manifest-path=${{ inputs.manifest-file }}
+          cross build --release --target=${{ inputs.target }}
         else
-          cargo build --release --target=${{ inputs.target }} --manifest-path=${{ inputs.manifest-file }}
+          cargo build --release --target=${{ inputs.target }}
         fi
+
+        cd "$current_dir"
 
     - name: Rename lib to the final name
       id: rename
       shell: bash
       run: |
+        current_dir=$(pwd)
+        echo "Going from path: $current_dir"
+        echo "To path: ${{ inputs.project-dir }}"
+
+        cd "${{ inputs.project-dir }}"
+
         LIB_PREFIX="lib"
         case ${{ inputs.target }} in
           *-pc-windows-*) LIB_PREFIX="" ;;
@@ -89,7 +103,7 @@ runs:
         CRATE_PATH="$(dirname ${{ inputs.manifest-file }})"
 
         # Copy the release build lib to the result location
-        cp "${CRATE_PATH}/target/${{ inputs.target }}/release/${LIB_NAME}" "${LIB_DIR}"
+        cp "${{ inputs.project-dir }}/target/${{ inputs.target }}/release/${LIB_NAME}" "${LIB_DIR}"
 
         # Final paths
         # In the end we use ".so" for MacOS in the final build
