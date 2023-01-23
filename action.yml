@@ -27,7 +27,7 @@ inputs:
     default: "2.16"
     required: false
   project-dir:
-    description: A relative path where the project is located.
+    description: A relative path where the project is located. The script is going to enter this path.
     required: true
     default: "./"
 
@@ -74,6 +74,7 @@ runs:
       shell: bash
       run: |
         current_dir=$(pwd)
+
         echo "Going from path: $current_dir"
         echo "To path: ${{ inputs.project-dir }}"
 
@@ -92,18 +93,12 @@ runs:
           *-pc-windows-*) LIB_SUFFIX=".dll" ;;
         esac;
 
-        CICD_INTERMEDIATES_DIR=$(mktemp -d) 
-
         # Setup paths
-        LIB_DIR="${CICD_INTERMEDIATES_DIR}/released-lib"
-        mkdir -p "${LIB_DIR}"
         LIB_NAME="${LIB_PREFIX}${{ inputs.project-name }}${LIB_SUFFIX}"
+        LIB_DIR="target/${{ inputs.target }}/release"
         LIB_PATH="${LIB_DIR}/${LIB_NAME}"
 
-        # Copy the release build lib to the result location
-        cp "target/${{ inputs.target }}/release/${LIB_NAME}" "${LIB_DIR}"
-
-        # Final paths
+        # Final name
         # In the end we use ".so" for MacOS in the final build
         # See: https://www.erlang.org/doc/man/erlang.html#load_nif-2
         LIB_FINAL_SUFFIX="${LIB_SUFFIX}"
@@ -113,16 +108,10 @@ runs:
 
         LIB_FINAL_NAME="${LIB_PREFIX}${{ inputs.project-name }}-v${{ inputs.project-version }}-nif-${{ inputs.nif-version }}-${{ inputs.target }}${LIB_FINAL_SUFFIX}"
 
-        # Rename lib to final name on this directory
-        mv "${LIB_DIR}/${LIB_NAME}" "${LIB_DIR}/${LIB_FINAL_NAME}"
-
         cd "${LIB_DIR}"
-        tar -cvzf "${LIB_FINAL_NAME}.tar.gz" "${LIB_FINAL_NAME}"
+        tar -cvzf "${LIB_NAME}.tar.gz" "${LIB_NAME}"
         cd -
 
-        # Passes the path relative to the root of the project.
-        LIB_FINAL_PATH="${LIB_DIR}/${LIB_FINAL_NAME}.tar.gz"
-
         # Let subsequent steps know where to find the lib
-        echo "file-path=${LIB_FINAL_PATH}" >> $GITHUB_OUTPUT
+        echo "file-path=${LIB_PATH}.tar.gz" >> $GITHUB_OUTPUT
         echo "file-name=${LIB_FINAL_NAME}.tar.gz" >> $GITHUB_OUTPUT
