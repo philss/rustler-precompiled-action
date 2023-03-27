@@ -51,6 +51,11 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Set the NIF version as env var
+      shell: bash
+      run: |
+        echo "RUSTLER_NIF_VERSION=${{ inputs.nif-version }}" >> $GITHUB_ENV
+
     - name: Download cross from GitHub releases
       uses: giantswarm/install-binary-action@v1.1.0
       if: ${{ inputs.use-cross }}
@@ -61,7 +66,7 @@ runs:
         tarball_binary_path: "${binary}"
         smoke_test: "${binary} --version"
 
-    - name: Show version information (Rust, cargo, GCC)
+    - name: Show version information (Rust, cargo, GCC, NIF version)
       shell: bash
       run: |
         gcc --version || true
@@ -71,6 +76,7 @@ runs:
         cargo -V
         rustc -V
         rustc --print=cfg
+        echo "env RUSTLER_NIF_VERSION=$RUSTLER_NIF_VERSION"
 
     - name: Build
       shell: bash
@@ -82,6 +88,13 @@ runs:
         cd "${{ inputs.project-dir }}"
 
         if [ "${{ inputs.use-cross }}" == "true" ]; then
+          if grep --quiet "RUSTLER_NIF_VERSION" "Cross.toml"; then
+            echo "Cross configuration looks good."
+          else
+            echo "::error file=Cross.toml,line=1::Missing configuration for passing the RUSTLER_NIF_VERSION env var to cross. Please read the precompilation guide: https://hexdocs.pm/rustler_precompiled/precompilation_guide.html#additional-configuration-before-build"
+            exit 1
+          fi
+
           cross build --release --target=${{ inputs.target }}
         else
           cargo build --release --target=${{ inputs.target }}
