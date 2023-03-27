@@ -35,5 +35,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added all needed for the first release. See the README.md for a full description
   of inputs and outputs.
 
-[v1.0.1]: https://github.com/philss/rustler-precompiled-action/compare/v1.0.1...v1.0.1
+[v1.0.1]: https://github.com/philss/rustler-precompiled-action/compare/v1.0.0...v1.0.1
 [v1.0.0]: https://github.com/philss/rustler-precompiled-action/releases/tag/v1.0.0
