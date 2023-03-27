@@ -12,7 +12,7 @@ is well maintained.
 ```yaml
 - name: Build the project
   id: build
-  uses: philss/rustler-precompiled-action@v1.0.0
+  uses: philss/rustler-precompiled-action@v1.0.1
   with:
     project-name: example
     project-version: "0.5.2"
