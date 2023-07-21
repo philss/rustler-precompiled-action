@@ -33,7 +33,7 @@ inputs:
       For example, "native/my_nif".
     required: true
     default: "./"
-  cargo_args:
+  cargo-args:
     description: Additional arguments to cargo or cross.
     required: false
     default: ""
@@ -90,7 +90,7 @@ runs:
     - name: Build
       shell: bash
       run: |
-        build.sh "$(pwd)" "${{ inputs.project-dir }}" "${{ inputs.target }}" "${{ inputs.nif-version }}" "${{ inputs.use-cross }}" "${{ inputs.cargo_args }}"
+        build.sh "$(pwd)" "${{ inputs.project-dir }}" "${{ inputs.target }}" "${{ inputs.nif-version }}" "${{ inputs.use-cross }}" "${{ inputs.cargo-args }}"
 
     - name: Rename lib to the final name
       id: rename
