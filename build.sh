@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: ./build.sh "$(pwd)" "$(pwd)" "x86_64-unknown-linux-gnu" 2.17 true
+# Usage: ./build.sh "$(pwd)" "$(pwd)" "x86_64-unknown-linux-gnu" 2.17 true "--no-default-features"
 #
 # It composes the "build" command and executes it at the end.
 #
@@ -12,6 +12,7 @@ project_dir=$2
 target_arch=$3
 nif_version=$4
 use_cross=${5:-"false"}
+cargo_args=${6:-""}
 logging=$(mktemp)
 
 # Version 0.29 is where RUSTLER_NIF_VERSION env var was deprecated.
@@ -129,6 +130,10 @@ if [ "$highest_nif_version" != "$desired_feature" ]; then
       fi
     fi
   fi
+fi
+
+if [ ! -z "$cargo_args" ]; then
+  args="$args $cargo_args"
 fi
 
 echo "Arguments: $args"
