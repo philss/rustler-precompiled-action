@@ -7,6 +7,10 @@ It's **important to notice that this Action won't install Rust**. So you need to
 install it first. For that we recommend the [dtolnay/rust-toolchain] action that
 is well maintained.
 
+See the [RustlerPrecompiled's guide] before trying to setup your project, because
+there is a lot of things **you must configure in your project** before using this
+GH Action.
+
 ## Usage
 
 ```yaml
@@ -67,7 +71,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        nif: ["2.16", "2.15"]
+        nif: ["2.15"]
         job:
           - { target: aarch64-apple-darwin        , os: macos-11      }
           - { target: aarch64-unknown-linux-gnu   , os: ubuntu-20.04 , use-cross: true }
@@ -142,3 +146,4 @@ limitations under the License.
 [RustlerPrecompiled]: https://github.com/philss/rustler_precompiled
 [RustlerPrecompiledExample]: https://github.com/philss/rustler_precompilation_example 
 [dtolnay/rust-toolchain]: https://github.com/dtolnay/rust-toolchain
+[RustlerPrecompiled's guide]: https://hexdocs.pm/rustler_precompiled/precompilation_guide.html

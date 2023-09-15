@@ -56,6 +56,11 @@ runs:
       run: |
         echo "RUSTLER_NIF_VERSION=${{ inputs.nif-version }}" >> $GITHUB_ENV
 
+    - name: Add the action path to the gh paths to find scripts
+      shell: bash
+      run: |
+        echo "${{ github.action_path }}" >> $GITHUB_PATH
+
     - name: Download cross from GitHub releases
       uses: giantswarm/install-binary-action@v1.1.0
       if: ${{ inputs.use-cross }}
@@ -81,26 +86,7 @@ runs:
     - name: Build
       shell: bash
       run: |
-        INITIAL_DIR=$(pwd)
-        echo "Going from path: $INITIAL_DIR"
-        echo "To path: ${{ inputs.project-dir }}"
-
-        cd "${{ inputs.project-dir }}"
-
-        if [ "${{ inputs.use-cross }}" == "true" ]; then
-          if grep --quiet "RUSTLER_NIF_VERSION" "Cross.toml"; then
-            echo "Cross configuration looks good."
-          else
-            echo "::error file=Cross.toml,line=1::Missing configuration for passing the RUSTLER_NIF_VERSION env var to cross. Please read the precompilation guide: https://hexdocs.pm/rustler_precompiled/precompilation_guide.html#additional-configuration-before-build"
-            exit 1
-          fi
-
-          cross build --release --target=${{ inputs.target }}
-        else
-          cargo build --release --target=${{ inputs.target }}
-        fi
-
-        cd "$INITIAL_DIR"
+        build.sh "$(pwd)" "${{ inputs.project-dir }}" "${{ inputs.target }}" "${{ inputs.nif-version }}" "${{ inputs.use-cross }}"
 
     - name: Rename lib to the final name
       id: rename
