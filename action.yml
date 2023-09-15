@@ -33,6 +33,15 @@ inputs:
       For example, "native/my_nif".
     required: true
     default: "./"
+  variant:
+    description: >
+      An alternative version for a given target that is useful when you are building for
+      the same target, but with different dependencies, or hardware capatibilities.
+      This name should be a valid string that can be represented as an Elixir atom.
+      Prefer to use only alphanumerics and underscores.
+      This is going to be appended to the artifact name.
+    required: false
+    default: ""
 
 outputs:
   file-name:
@@ -124,8 +133,14 @@ runs:
           *-apple-darwin) LIB_FINAL_SUFFIX=".so" ;;
         esac;
 
+        MAYBE_VARIANT_NAME="${{ inputs.variant }}"
+
+        if [[ $MAYBE_VARIANT_NAME != "" ]]; then
+          MAYBE_VARIANT_NAME="--${MAYBE_VARIANT_NAME}"
+        fi
+
         # It saves in the format RustlerPrecompiled expects.
-        LIB_FINAL_NAME="${LIB_PREFIX}${{ inputs.project-name }}-v${{ inputs.project-version }}-nif-${{ inputs.nif-version }}-${{ inputs.target }}${LIB_FINAL_SUFFIX}"
+        LIB_FINAL_NAME="${LIB_PREFIX}${{ inputs.project-name }}-v${{ inputs.project-version }}-nif-${{ inputs.nif-version }}-${{ inputs.target }}${MAYBE_VARIANT_NAME}${LIB_FINAL_SUFFIX}"
         TAR_GZ_FILE="${LIB_FINAL_NAME}.tar.gz"
 
         cd "${LIB_DIR}"

@@ -12,6 +12,7 @@ project_dir=$2
 target_arch=$3
 nif_version=$4
 use_cross=${5:-"false"}
+
 logging=$(mktemp)
 
 # Version 0.29 is where RUSTLER_NIF_VERSION env var was deprecated.
