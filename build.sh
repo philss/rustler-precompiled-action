@@ -20,7 +20,7 @@ rustler_features_since="v0.29.0"
 rustler_features_required_since="v0.30.0"
 
 function build_tool() {
-  if [ "$1" == "true" ]; then
+  if [ "$1" = "true" ]; then
     echo "cross"
   else
     echo "cargo"
@@ -28,7 +28,7 @@ function build_tool() {
 }
 
 function check_cross_config() {
-  if [ ["$1" < "$rustler_features_since"] ]; then
+  if [[ "$1" < "$rustler_features_since" ]]; then
     if grep --quiet "RUSTLER_NIF_VERSION" "Cross.toml"; then
       echo "Cross configuration looks good." >> "$logging"
     else
@@ -96,7 +96,7 @@ desired_feature="nif_version_$nif_version"
 
 tool=$(build_tool "$use_cross")
 
-if [ "$tool" == "cross" ]; then
+if [ "$tool" = "cross" ]; then
   check_cross_config "$rustler_version"
 fi
 
@@ -112,17 +112,17 @@ echo "Tool: $tool"
 # In case Rustler v0.30 or above is in use and the desired NIF version feature
 # could not be activated, we log an error and exit.
 if [ "$highest_nif_version" != "$desired_feature" ]; then
-  if [ ["$rustler_version" > "$rustler_features_since"] ] ||  ["$rustler_version" == "$rustler_features_since"]; then
+  if [[ "$rustler_version" > "$rustler_features_since" ]] || [[ "$rustler_version" == "$rustler_features_since" ]]; then
     # So we test if the desired feature appears when we active it in the project.
     cargo_features=$(cargo tree -e features --depth 1 -i rustler -f "{p};{f}" --prefix none -F "$desired_feature" 2>/dev/null | head -n 1)
 
     rustler_nif_versions=$(rustler_nif_versions "$cargo_features")
     highest_nif_version=$(echo "$rustler_nif_versions" | head -n1)
 
-    if [ "$highest_nif_version" == "$desired_feature" ]; then
+    if [[ "$highest_nif_version" == "$desired_feature" ]]; then
       args="$args --features $desired_feature"
     else
-      if [ ["$rustler_version" > "$rustler_features_required_since"] ] ||  ["$rustler_version" == "$rustler_features_required_since"]; then
+      if [[ "$rustler_version" > "$rustler_features_required_since" ]] || [[ "$rustler_version" == "$rustler_features_required_since" ]]; then
         echo "::error file=Cargo.toml,line=1::The desired feature \"$desired_feature\" is not equal to the highest NIF version that is active: \"$highest_nif_version\""
         echo "::error file=Cargo.toml,line=1::Missing setup of NIF features that is required since Rustler $rustler_features_required_since. Please read the precompilation guide: https://hexdocs.pm/rustler_precompiled/precompilation_guide.html#additional-configuration-before-build"
         exit 1
@@ -141,5 +141,5 @@ echo "Building..."
 eval "$tool" "$args"
 echo "Done."
 
-echo "Going back to original dir: $INITIAL_DIR"
-cd "$INITIAL_DIR"
+echo "Going back to original dir: $initial_dir"
+cd "$initial_dir"
