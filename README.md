@@ -32,15 +32,21 @@ See the example workflow below.
 
 The following inputs are accepted:
 
-| Name              | Description                                                           | Required | Default    |
-|-------------------|-----------------------------------------------------------------------|----------|------------|
-| `cross-version`   |  The version desired for cross. Only relevant if `use-cross` is true. | false    | `"v0.2.4"` |
-| `nif-version`     |  The NIF version that we are aiming to.                               | false    | `"2.16"`   |
-| `project-dir`     |  A relative path where the project is located.                        | true     | `"./"`     |
-| `project-name`    |  Name of the crate that is being built. Same as in Cargo.toml         | true     |            |
-| `project-version` |  The version of the Elixir package that the crate is in.              | true     |            |
-| `target`          |  The Rust target we are building to.                                  | true     |            |
-| `use-cross`       |  If the target requires the usage of cross.                           | false    |            |
+| Name              | Description                                                           | Required | Default    | Example                      |
+|-------------------|-----------------------------------------------------------------------|----------|------------|------------------------------|
+| `cross-version`   |  The version desired for cross. Only relevant if `use-cross` is true. | false    | `"v0.2.4"` |                              |
+| `nif-version`     |  The NIF version that we are aiming to.                               | false    | `"2.16"`   |                              |
+| `project-dir`     |  A relative path where the project is located.                        | true     | `"./"`     | `"native/example"`           |
+| `project-name`    |  Name of the crate that is being built. Same as in Cargo.toml         | true     |            |                              |
+| `project-version` |  The version of the Elixir package that the crate is in.              | true     |            |                              |
+| `target`          |  The Rust target we are building to.                                  | true     |            | `"x86_64-unknown-linux-gnu"` |
+| `use-cross`       |  If the target requires the usage of cross.                           | false    | `false`    |                              |
+| `variant`         |  A name that represents an alternative version, added as a suffix.    | false    | `""`       | `"old_glibc"`                |
+| `features`        |  A string with a list of cargo features to activate.                  | false    | `""`       | `"a,b,c"`                    |
+
+Note that the build is going to activate cargo features for the NIF version,
+depending on which version of Rustler the project is using.
+Please read [RustlerPrecompiled's guide] for details.
 
 ## Outputs
 
@@ -125,6 +131,15 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
 
 ```
+
+## Debugging
+
+It's possible to read the logs of the build in the GitHub Actions page.
+
+But if you need to play with the setup without building the project every
+time, you can set the environment variable `DRY_RUN` to `true`, and you
+can see the output of the command instead of running it.
+Be aware that the build will fail because it won't be able to find the artifacts.
 
 ## License
 
