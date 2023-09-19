@@ -42,7 +42,7 @@ The following inputs are accepted:
 | `target`          |  The Rust target we are building to.                                  | true     |            | `"x86_64-unknown-linux-gnu"` |
 | `use-cross`       |  If the target requires the usage of cross.                           | false    | `false`    |                              |
 | `variant`         |  A name that represents an alternative version, added as a suffix.    | false    | `""`       | `"old_glibc"`                |
-| `features`        |  A string with a list of cargo features to activate.                  | false    | `""`       | `"a,b,c"`                    |
+| `cargo-args`      |  A string with cargo arguments to be appended to the build command.   | false    | `""`       | `"--features a,b,c"`         |
 
 Note that the build is going to activate cargo features for the NIF version,
 depending on which version of Rustler the project is using.

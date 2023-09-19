@@ -37,18 +37,23 @@ inputs:
     description: >
       An alternative version for a given target that is useful when you are building for
       the same target, but with different dependencies, or hardware capatibilities.
+
       This name should be a valid string that can be represented as an Elixir atom.
+
       Prefer to use only alphanumerics and underscores.
       This is going to be appended to the artifact name.
     required: false
     default: ""
-  features:
+  cargo-args:
     description: >
-      A string with the features to activate. Note that the NIF version features from
-      Rustler convention are going to be activated by default.
+      A string with additional arguments to be appended to the build command.
+      This is useful to pass flags like `--features`.
 
-      The string of features is separated by commas, without spaces.
-      Something like "a,b,c".
+      Notice that the flags `--release` and `--target` are going to be
+      passed down automatically.
+
+      The flag `--features` may be passed, depending of the NIF version. But you can
+      always pass this flag multiple times.
     required: false
     default: ""
 
@@ -100,11 +105,12 @@ runs:
         rustc -V
         rustc --print=cfg
         echo "env RUSTLER_NIF_VERSION=$RUSTLER_NIF_VERSION"
+        echo "env RUSTFLAGS=$RUSTFLAGS"
 
     - name: Build
       shell: bash
       run: |
-        build.sh "$(pwd)" "${{ inputs.project-dir }}" "${{ inputs.target }}" "${{ inputs.nif-version }}" "${{ inputs.use-cross }}" "${{ inputs.features }}"
+        build.sh "$(pwd)" "${{ inputs.project-dir }}" "${{ inputs.target }}" "${{ inputs.nif-version }}" "${{ inputs.use-cross }}" "${{ inputs.cargo-args }}"
 
     - name: Rename lib to the final name
       id: rename

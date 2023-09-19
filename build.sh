@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: ./build.sh "$(pwd)" "$(pwd)" "x86_64-unknown-linux-gnu" 2.17 true
+# Usage: ./build.sh "$(pwd)" "$(pwd)" "x86_64-unknown-linux-gnu" 2.17 true "--features a,b --no-default-features"
 #
 # It composes the "build" command and executes it at the end.
 #
@@ -15,7 +15,7 @@ project_dir=$2
 target_arch=$3
 nif_version=$4
 use_cross=${5:-"false"}
-features=${6:-""}
+cargo_args=${6:-""}
 
 logging=$(mktemp)
 
@@ -112,10 +112,9 @@ fi
 
 args="build --release --target=$target_arch"
 
-# The --features flag can be used multiple times. 
-# We add more features based on Rustler, in the bottom.
-if [ "$features" != "" ]; then
-  args="$args --features $features"
+# This is going to add arbritary args to the command, if the user provide it.
+if [ "$cargo_args" != "" ]; then
+  args="$args $cargo_args"
 fi
 
 echo "Rustler version: $rustler_version"
