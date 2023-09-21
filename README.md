@@ -55,10 +55,11 @@ Some env vars can be used to control how the build is made. Right now, the follo
 * `RUSTFLAGS` - used to pass down the compilation flags to the Rust compiler.
 
 * `RUSTLER_PRECOMPILED_DEBUG_MODE` - a flag that enables debug mode compilation (the default in development).
-  By default it's empty, but you can set it to `"true"` to activate it.
+  By default it's unset, but you can set it to `"true"` to activate it.
 
 * `DRY_RUN` - a flag that is useful to see the command that is going to be executed. This is 
   useful for debugging. Note that the build will fail, since it cannot generate the artifacts.
+  By default it's unset, but you can set it to `"true"` to activate it.
 
 ## Outputs
 
