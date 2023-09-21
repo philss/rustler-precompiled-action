@@ -110,7 +110,12 @@ if [ "$tool" = "cross" ]; then
   check_cross_config "$rustler_version"
 fi
 
-args="build --release --target=$target_arch"
+args="build --target=$target_arch"
+
+# A scape hatch to improve build times for when a release is not the intention.
+if [ "$RUSTLER_PRECOMPILED_DEBUG_MODE" != "true" ]; then
+  args="$args --release"
+fi
 
 # This is going to add arbritary args to the command, if the user provide it.
 if [ "$cargo_args" != "" ]; then

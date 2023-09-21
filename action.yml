@@ -106,6 +106,7 @@ runs:
         rustc --print=cfg
         echo "env RUSTLER_NIF_VERSION=$RUSTLER_NIF_VERSION"
         echo "env RUSTFLAGS=$RUSTFLAGS"
+        echo "env RUSTLER_PRECOMPILED_DEBUG_MODE=$RUSTLER_PRECOMPILED_DEBUG_MODE"
 
     - name: Build
       shell: bash
@@ -136,9 +137,16 @@ runs:
           *-pc-windows-*) LIB_SUFFIX=".dll" ;;
         esac;
 
+        TARGET_MODE_DIR="release"
+
+        # A scape hatch to improve build times for when a release is not the intention.
+        if [ "$RUSTLER_PRECOMPILED_DEBUG_MODE" = "true" ]; then
+          TARGET_MODE_DIR="debug"
+        fi
+
         # Setup paths
         LIB_NAME="${LIB_PREFIX}${{ inputs.project-name }}${LIB_SUFFIX}"
-        LIB_DIR="target/${{ inputs.target }}/release"
+        LIB_DIR="target/${{ inputs.target }}/${TARGET_MODE_DIR}"
 
         # Final name
         # In the end we use ".so" for MacOS in the final build

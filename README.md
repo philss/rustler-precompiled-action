@@ -48,6 +48,18 @@ Note that the build is going to activate cargo features for the NIF version,
 depending on which version of Rustler the project is using.
 Please read [RustlerPrecompiled's guide] for details.
 
+### Environment variables
+
+Some env vars can be used to control how the build is made. Right now, the following are accepted:
+
+* `RUSTFLAGS` - used to pass down the compilation flags to the Rust compiler.
+
+* `RUSTLER_PRECOMPILED_DEBUG_MODE` - a flag that enables debug mode compilation (the default in development).
+  By default it's empty, but you can set it to `"true"` to activate it.
+
+* `DRY_RUN` - a flag that is useful to see the command that is going to be executed. This is 
+  useful for debugging. Note that the build will fail, since it cannot generate the artifacts.
+
 ## Outputs
 
 | Name          | Description                                       |
