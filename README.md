@@ -16,7 +16,7 @@ GH Action.
 ```yaml
 - name: Build the project
   id: build
-  uses: philss/rustler-precompiled-action@v1.0.1
+  uses: philss/rustler-precompiled-action@v1.1.0
   with:
     project-name: example
     project-version: "0.5.2"
@@ -121,7 +121,7 @@ jobs:
 
     - name: Build the project
       id: build-crate
-      uses: philss/rustler-precompiled-action@v1.0.0
+      uses: philss/rustler-precompiled-action@v1.1.0
       with:
         project-name: example
         project-version: ${{ env.PROJECT_VERSION }}
