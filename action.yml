@@ -12,7 +12,10 @@ inputs:
     description: The version to use in the name of the lib. This mostly matches the Elixir package version.
     required: true
   cross-version:
-    description: The version desired for cross, the tool that builds for multiple plataforms.
+    description: >
+      The version desired for cross, the tool that builds for multiple plataforms.
+      It's possible to specify a version, or the string "from-source" to install
+      from the main branch of the project repository.
     required: false
     default: "v0.2.4"
   use-cross:
@@ -86,13 +89,19 @@ runs:
 
     - name: Download cross from GitHub releases
       uses: giantswarm/install-binary-action@v1.1.0
-      if: ${{ inputs.use-cross }}
+      if: ${{ inputs.use-cross && inputs.cross-version != 'from-source' }}
       with:
         binary: "cross"
         version: ${{ inputs.cross-version }}
         download_url: "https://github.com/cross-rs/cross/releases/download/${version}/cross-x86_64-unknown-linux-gnu.tar.gz"
         tarball_binary_path: "${binary}"
         smoke_test: "${binary} --version"
+
+    - name: Install cross from GitHub latest revision
+      shell: bash
+      if: ${{ inputs.use-cross && inputs.cross-version == 'from-source' }}
+      run: |
+        cargo install cross --git https://github.com/cross-rs/cross
 
     - name: Show version information (Rust, cargo, GCC, NIF version)
       shell: bash
