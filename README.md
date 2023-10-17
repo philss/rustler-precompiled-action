@@ -34,7 +34,7 @@ The following inputs are accepted:
 
 | Name              | Description                                                           | Required | Default    | Example                      |
 |-------------------|-----------------------------------------------------------------------|----------|------------|------------------------------|
-| `cross-version`   |  The version desired for cross. Only relevant if `use-cross` is true. | false    | `"v0.2.4"` |                              |
+| `cross-version`   |  The version desired for cross. Only relevant if `use-cross` is true. | false    | `"v0.2.4"` | `"v0.2.5"` or `"from-source"`|
 | `nif-version`     |  The NIF version that we are aiming to.                               | false    | `"2.16"`   |                              |
 | `project-dir`     |  A relative path where the project is located.                        | true     | `"./"`     | `"native/example"`           |
 | `project-name`    |  Name of the crate that is being built. Same as in Cargo.toml         | true     |            |                              |
