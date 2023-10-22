@@ -43,6 +43,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     of the default "release".
   - `DRY_RUN`: avoid to run the build command, and instead print what would be executed.
 
+- Support Rustler NIF version selection by cargo features.
+
+  This makes the selection of the NIF version work for projects using Rustler
+  above version 0.29. The `RUSTLER_NIF_VERSION` is deprecated since that version,
+  and was removed in the v0.30 of Rustler.
+
+  The build script is going to detect which cargo features the project has declared
+  that are related to NIF versions. It is going to take the same naming used by
+  Rustler - e.g. `nif_version_2_15`. If the project has declared any "version features",
+  the build script is going to activate the correct version based on the `:nif-version`
+  input of the GitHub Action.
+
+  See the update from Rustler: https://github.com/rusterlium/rustler/blob/master/UPGRADE.md#028---029
+  And also the RustlerPrecompiled guide: https://hexdocs.pm/rustler_precompiled/precompilation_guide.html#additional-configuration-before-build
+
 ## [v1.0.1] - 2023-03-27
 
 ### Fixed
