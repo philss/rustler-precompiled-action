@@ -90,7 +90,7 @@ echo "To path: $project_dir" >> "$logging"
 
 cd "$project_dir"
 
-cargo_features=$(cargo tree -e features --depth 1 -i rustler -f "{p};{f}" --prefix none | head -n 1)
+cargo_features=$(cargo tree -e features --depth 1 -i rustler -f "{p};{f}" --prefix none --no-default-features | head -n 1)
 
 echo "Cargo features: $cargo_features" >> $logging
 
@@ -139,7 +139,7 @@ if [ "$highest_nif_version" != "$desired_feature" ]; then
     echo "Rustler version is equal or above $rustler_features_since" >> $logging
 
     # So we test if the desired feature appears when we active it in the project.
-    cargo_features=$(cargo tree -e features --depth 1 -i rustler -f "{p};{f}" --prefix none -F "$desired_feature" 2>>"$logging" | head -n 1)
+    cargo_features=$(cargo tree -e features --depth 1 -i rustler -f "{p};{f}" --prefix none --no-default-features -F "$desired_feature" 2>>"$logging" | head -n 1)
 
     echo "Rustler features when desired feature is activated in this project: $cargo_features" >> $logging
 
