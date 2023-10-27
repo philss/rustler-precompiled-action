@@ -20,6 +20,7 @@ inputs:
     default: "v0.2.4"
   use-cross:
     description: If the target requires the usage of cross.
+    type: boolean
     required: false
     default: false
   target:
