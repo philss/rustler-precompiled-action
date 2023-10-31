@@ -121,7 +121,7 @@ runs:
     - name: Build
       shell: bash
       run: |
-        build.sh "$(pwd)" "${{ inputs.project-dir }}" "${{ inputs.target }}" "${{ inputs.nif-version }}" "${{ inputs.use-cross }}" "${{ inputs.cargo-args }}"
+        ${{ github.action_path }}/build.sh "$(pwd)" "${{ inputs.project-dir }}" "${{ inputs.target }}" "${{ inputs.nif-version }}" "${{ inputs.use-cross }}" "${{ inputs.cargo-args }}"
 
     - name: Rename lib to the final name
       id: rename
