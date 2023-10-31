@@ -86,7 +86,10 @@ runs:
     - name: Add the action path to the gh paths to find scripts
       shell: bash
       run: |
+        # Both needed because they are unexpectedly different for contianers apparently:
+        # https://github.com/actions/runner/pull/1762#issuecomment-1105843659
         echo "${{ github.action_path }}" >> $GITHUB_PATH
+        echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
 
     - name: Download cross from GitHub releases
       uses: giantswarm/install-binary-action@v1.1.0
@@ -118,15 +121,10 @@ runs:
         echo "env RUSTFLAGS=$RUSTFLAGS"
         echo "env RUSTLER_PRECOMPILED_DEBUG_MODE=$RUSTLER_PRECOMPILED_DEBUG_MODE"
 
-    - run: echo $GITHUB_ACTION_PATH
-      shell: bash
-    - run: echo ${{ github.action_path }}
-      shell: bash
-
     - name: Build
       shell: bash
       run: |
-        ${{ github.action_path }}/build.sh "$(pwd)" "${{ inputs.project-dir }}" "${{ inputs.target }}" "${{ inputs.nif-version }}" "${{ inputs.use-cross }}" "${{ inputs.cargo-args }}"
+        build.sh "$(pwd)" "${{ inputs.project-dir }}" "${{ inputs.target }}" "${{ inputs.nif-version }}" "${{ inputs.use-cross }}" "${{ inputs.cargo-args }}"
 
     - name: Rename lib to the final name
       id: rename
