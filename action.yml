@@ -118,6 +118,11 @@ runs:
         echo "env RUSTFLAGS=$RUSTFLAGS"
         echo "env RUSTLER_PRECOMPILED_DEBUG_MODE=$RUSTLER_PRECOMPILED_DEBUG_MODE"
 
+    - run: echo $GITHUB_ACTION_PATH
+      shell: bash
+    - run: echo ${{ github.action_path }}
+      shell: bash
+
     - name: Build
       shell: bash
       run: |
