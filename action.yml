@@ -86,7 +86,10 @@ runs:
     - name: Add the action path to the gh paths to find scripts
       shell: bash
       run: |
+        # Both needed because they are unexpectedly different for contianers apparently:
+        # https://github.com/actions/runner/pull/1762#issuecomment-1105843659
         echo "${{ github.action_path }}" >> $GITHUB_PATH
+        echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
 
     - name: Download cross from GitHub releases
       uses: giantswarm/install-binary-action@v1.1.0
