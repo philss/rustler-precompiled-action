@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [v1.1.4] - 2023-05-15
+
+### Fixed
+
+- Fix `use-cross` to be read as boolean.
+
+- Put the script path to the `GITHUB_PATH` env var, thus making it work inside
+  containers.
+
+- Update "giantswarm/install-binary-action" Action to v2.0.0. This fixes the
+  NodeJS version warnings.
+
 ## [v1.1.3] - 2023-10-27
 
 ### Fixed
@@ -103,6 +117,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added all needed for the first release. See the README.md for a full description
   of inputs and outputs.
 
+[Unreleased]: https://github.com/philss/rustler-precompiled-action/compare/v1.1.4...HEAD
+[v1.1.4]: https://github.com/philss/rustler-precompiled-action/compare/v1.1.3...v1.1.4
 [v1.1.3]: https://github.com/philss/rustler-precompiled-action/compare/v1.1.2...v1.1.3
 [v1.1.2]: https://github.com/philss/rustler-precompiled-action/compare/v1.1.1...v1.1.2
 [v1.1.1]: https://github.com/philss/rustler-precompiled-action/compare/v1.1.0...v1.1.1
