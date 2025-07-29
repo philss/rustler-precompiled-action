@@ -146,7 +146,7 @@ runs:
         # See: https://doc.rust-lang.org/reference/linkage.html
         LIB_SUFFIX=".so"
         case ${{ inputs.target }} in
-          *-apple-darwin) LIB_SUFFIX=".dylib" ;;
+          *-apple-*) LIB_SUFFIX=".dylib" ;;
           *-pc-windows-*) LIB_SUFFIX=".dll" ;;
         esac;
 
