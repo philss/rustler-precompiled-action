@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Allowing more Apple targets by not relying only on "darwin" in the target name.
+
 - Update "giantswarm/install-binary-action" Action to v4.0.0. This fixes the
   NodeJS version warnings.
 
