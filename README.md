@@ -16,7 +16,7 @@ GH Action.
 ```yaml
 - name: Build the project
   id: build
-  uses: philss/rustler-precompiled-action@v1.1.4
+  uses: philss/rustler-precompiled-action@v1.1.5
   with:
     project-name: example
     project-version: "0.5.2"
@@ -92,20 +92,20 @@ jobs:
       matrix:
         nif: ["2.15"]
         job:
-          - { target: aarch64-apple-darwin        , os: macos-11      }
-          - { target: aarch64-unknown-linux-gnu   , os: ubuntu-20.04 , use-cross: true }
-          - { target: aarch64-unknown-linux-musl  , os: ubuntu-20.04 , use-cross: true }
-          - { target: arm-unknown-linux-gnueabihf , os: ubuntu-20.04 , use-cross: true }
-          - { target: riscv64gc-unknown-linux-gnu , os: ubuntu-20.04 , use-cross: true }
-          - { target: x86_64-apple-darwin         , os: macos-11      }
-          - { target: x86_64-pc-windows-gnu       , os: windows-2019  }
-          - { target: x86_64-pc-windows-msvc      , os: windows-2019  }
-          - { target: x86_64-unknown-linux-gnu    , os: ubuntu-20.04  }
-          - { target: x86_64-unknown-linux-musl   , os: ubuntu-20.04 , use-cross: true }
+          - { target: aarch64-apple-darwin        , os: macos-15 }
+          - { target: aarch64-unknown-linux-gnu   , os: ubuntu-22.04 , use-cross: true }
+          - { target: aarch64-unknown-linux-musl  , os: ubuntu-22.04 , use-cross: true }
+          - { target: arm-unknown-linux-gnueabihf , os: ubuntu-22.04 , use-cross: true }
+          - { target: riscv64gc-unknown-linux-gnu , os: ubuntu-22.04 , use-cross: true }
+          - { target: x86_64-apple-darwin         , os: macos-15-intel }
+          - { target: x86_64-pc-windows-gnu       , os: windows-2022 }
+          - { target: x86_64-pc-windows-msvc      , os: windows-2022 }
+          - { target: x86_64-unknown-linux-gnu    , os: ubuntu-22.04 }
+          - { target: x86_64-unknown-linux-musl   , os: ubuntu-22.04 , use-cross: true }
 
     steps:
     - name: Checkout source code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v6
 
     - name: Extract project version
       shell: bash
@@ -121,7 +121,7 @@ jobs:
 
     - name: Build the project
       id: build-crate
-      uses: philss/rustler-precompiled-action@v1.1.0
+      uses: philss/rustler-precompiled-action@v1.1.5
       with:
         project-name: example
         project-version: ${{ env.PROJECT_VERSION }}
@@ -131,13 +131,13 @@ jobs:
         project-dir: "native/example"
 
     - name: Artifact upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ steps.build-crate.outputs.file-name }}
         path: ${{ steps.build-crate.outputs.file-path }}
 
     - name: Publish archives and packages
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: |
           ${{ steps.build-crate.outputs.file-path }}
