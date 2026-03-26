@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.1.5] - 2026-03-26
+
+### Fixed
+
+- Update "giantswarm/install-binary-action" Action to v4.0.0. This fixes the
+  NodeJS version warnings.
+
 ## [v1.1.4] - 2023-05-15
 
 ### Fixed
@@ -117,7 +124,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added all needed for the first release. See the README.md for a full description
   of inputs and outputs.
 
-[Unreleased]: https://github.com/philss/rustler-precompiled-action/compare/v1.1.4...HEAD
+[Unreleased]: https://github.com/philss/rustler-precompiled-action/compare/v1.1.5...HEAD
+[v1.1.5]: https://github.com/philss/rustler-precompiled-action/compare/v1.1.4...v1.1.5
 [v1.1.4]: https://github.com/philss/rustler-precompiled-action/compare/v1.1.3...v1.1.4
 [v1.1.3]: https://github.com/philss/rustler-precompiled-action/compare/v1.1.2...v1.1.3
 [v1.1.2]: https://github.com/philss/rustler-precompiled-action/compare/v1.1.1...v1.1.2
